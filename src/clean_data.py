@@ -1,7 +1,10 @@
 import sqlite3
+import time
+
 from settings import *
 import os
 import pandas as pd
+from datetime import timedelta
 
 def clean_data():
     print(db_path)
@@ -260,15 +263,34 @@ def clean_transfers(conn):
 
 if __name__ == "__main__":
     conn = clean_data()
-    # clean_appearances(conn)
-    # clean_club_games(conn)
-    # clean_clubs(conn)
-    # clean_competitions(conn)
-    # clean_game_events(conn)
-    # clean_game_events(conn)
-    # clean_game_lineups(conn)
+    clean_appearances(conn)
+    print("✅ Cleaning appearances...")
+    time.sleep(1)
+    clean_club_games(conn)
+    print("✅ Cleaning club_games...")
+    time.sleep(1)
+    clean_clubs(conn)
+    print("✅ Cleaning clubs...")
+    time.sleep(1)
+    clean_competitions(conn)
+    print("✅ Cleaning competitions...")
+    time.sleep(1)
+    clean_game_events(conn)
+    print("✅ Cleaning game_events...")
+    time.sleep(1)
+    clean_game_lineups(conn)
+    print("✅ Cleaning game_lineups...")
+    time.sleep(1)
     clean_games(conn)
-    # clean_player_valuations(conn)
-    # clean_players(conn)
-    # clean_transfers(conn)
+    print("✅ Cleaning games...")
+    time.sleep(1)
+    clean_player_valuations(conn)
+    print("✅ Cleaning player_valuations...")
+    time.sleep(1)
+    clean_players(conn)
+    print("✅ Cleaning players...")
+    time.sleep(1)
+    clean_transfers(conn)
+    print("✅ Cleaning transfers...")
+    time.sleep(1)
 
