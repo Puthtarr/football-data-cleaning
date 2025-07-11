@@ -4,7 +4,10 @@ import sqlite3
 import pandas as pd
 import os
 from datetime import datetime
+import gdown
+import platform
 
+# https://drive.google.com/file/d/1Kpv8ySZh-0SHgmSftHbtdgxji8KQEpRz/view?usp=sharing
 # --------------------------------------------------
 # 1) PAGE CONFIG & GLOBAL STYLES
 # --------------------------------------------------
@@ -27,7 +30,35 @@ st.markdown(
 # --------------------------------------------------
 # 2) LOAD DATA
 # --------------------------------------------------
-DB_PATH = r"D:\Data Project\exercise\Football\database\clean_football.db"
+
+def download_db_path():
+    if platform.system() == "Windows":
+        return "D:/Data Project/exercise/Football/database/clean_football.db"
+    else:
+        # สำหรับ Streamlit Cloud หรือ Linux
+        db_path = "/tmp/clean_football.db"
+        if not os.path.exists(db_path):
+            file_id = "1Kpv8ySZh-0SHgmSftHbtdgxji8KQEpRz"  # ของคุณ
+            url = f"https://drive.google.com/uc?id={file_id}"
+            gdown.download(url, db_path, quiet=False)
+        return db_path
+
+@st.cache_resource
+def get_db_path():
+    return download_db_path()
+
+# DB_PATH = r"D:\Data Project\exercise\Football\database\clean_football.db"
+DB_PATH = get_db_path()
+
+# from sqlalchemy import create_engine
+#
+# @st.cache_data
+# def load_appearances(name):
+#     engine = create_engine("postgresql://USER:PASSWORD@HOST:5432/postgres")
+#     with engine.connect() as conn:
+#         df = pd.read_sql("SELECT * FROM appearances WHERE player_name = %s", conn, params=(name,))
+#     df["date"] = pd.to_datetime(df["date"], errors="coerce")
+#     return df
 
 @st.cache_data(show_spinner=False)
 def load_players():
@@ -132,4 +163,5 @@ if suggested_name:
 
     with col_tx:
         if st.button("Transfer History", use_container_width=True):
-            st.info("TODO → Transfer History page")
+            st.session_state["player_name"] = p["name"]
+            st.switch_page("pages/player_transfer.py")
