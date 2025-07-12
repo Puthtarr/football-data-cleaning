@@ -12,11 +12,15 @@ if user_question:
             chain = get_llm_chain()
             result = chain(user_question)
 
-            # ✅ ตอบกลับเฉพาะ SQL Query
-            sql_query = result["result"]
+            # get SQL from LLM build (maybe not appear)
+            sql_query = result["intermediate_steps"][0] if "intermediate_steps" in result else "Can't Create SQL"
+            final_answer = result["result"]
 
             st.subheader("🧠 SQL from AI:")
             st.code(sql_query, language="sql")
+
+            st.subheader("✅ Answer:")
+            st.success(final_answer)
 
         except Exception as e:
             st.error(f"An Error: {e}")

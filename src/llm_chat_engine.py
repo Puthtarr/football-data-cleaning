@@ -50,7 +50,54 @@ llm = ChatOpenAI(
 prompt = PromptTemplate(
     input_variables=["input"],
     template="""
-You are a Thai-speaking data analyst working with football statistics.
+You are an intelligent assistant that answers questions using data from a football SQLite database.
+
+Here is the schema of the database:
+
+Table: appearances
+- appearance_id: TEXT
+- game_id: INTEGER
+- player_id: INTEGER
+- player_club_id: INTEGER
+- date: TIMESTAMP
+- goals: INTEGER
+- assists: INTEGER
+- yellow_cards: INTEGER
+- red_cards: INTEGER
+- minutes_played: INTEGER
+
+Table: clubs
+- club_id: INTEGER
+- name: TEXT
+
+Table: players
+- player_id: INTEGER
+- name: TEXT
+- current_club_id: INTEGER
+
+Table: games
+- game_id: INTEGER
+- date: TIMESTAMP
+- home_club_id: INTEGER
+- away_club_id: INTEGER
+- home_club_goals: INTEGER
+- away_club_goals: INTEGER
+- home_club_name: TEXT
+- away_club_name: TEXT
+
+Table: transfers
+- player_id: INTEGER
+- transfer_date: DATE
+- from_club_id: INTEGER
+- to_club_id: INTEGER
+- transfer_fee: INTEGER
+- market_value_in_eur: INTEGER
+
+If you need to get the club name from a `club_id`, join with the `clubs` table on `club_id`.
+If you want to get player stats, use the `appearances` table.
+If you want to get total goals by a club, sum `goals` in `appearances` where `player_club_id = club_id`.
+
+When converting questions to SQL, always ensure the column and table names exist.
 
 Follow these strict rules:
 
@@ -59,7 +106,10 @@ Follow these strict rules:
 3. Always use player_name LIKE '%<name>%' to match players.
 4. When a season like "2021/2022" is mentioned, treat it as date BETWEEN '2021-07-01' AND '2022-06-30'.
 5. All goal data is stored in the table named appearances.
-6. Write only the SQL query. No explanation or other output.
+6. If the user asks about a team like "Liverpool", first find the club_id from table clubs WHERE name LIKE '%Liverpool%', then use that club_id in appearances.player_club_id.
+7. Always reply in Thai with human-friendly answer (e.g., "ลิเวอร์พูล ยิงได้ 85 ประตูในฤดูกาล 2021/22")
+
+Write only the final answer in Thai, ignore SQL output.
 
 Question: {input}
 """
