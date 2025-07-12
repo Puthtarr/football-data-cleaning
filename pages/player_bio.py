@@ -38,7 +38,7 @@ def download_db_path():
         # สำหรับ Streamlit Cloud หรือ Linux
         db_path = "/tmp/clean_football.db"
         if not os.path.exists(db_path):
-            file_id = "1Kpv8ySZh-0SHgmSftHbtdgxji8KQEpRz"  # ของคุณ
+            file_id = "1Kpv8ySZh-0SHgmSftHbtdgxji8KQEpRz"
             url = f"https://drive.google.com/uc?id={file_id}"
             gdown.download(url, db_path, quiet=False)
         return db_path

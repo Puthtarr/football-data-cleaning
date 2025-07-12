@@ -19,19 +19,27 @@ os.makedirs(player_images_path, exist_ok=True)
 pages_path = project_root / 'pages'
 os.makedirs(pages_path, exist_ok=True)
 
-@st.cache_resource
+
 def download_db_path():
     if platform.system() == "Windows":
         return "D:/Data Project/exercise/Football/database/clean_football.db"
     else:
-        # สำหรับ Streamlit Cloud หรือ Linux
+        # Path on Streamlit
         db_path = "/tmp/clean_football.db"
+
+        # Check exist file if already not download
         if not os.path.exists(db_path):
-            file_id = "1Kpv8ySZh-0SHgmSftHbtdgxji8KQEpRz"  # ของคุณ
+            file_id = "1Kpv8ySZh-0SHgmSftHbtdgxji8KQEpRz"
             url = f"https://drive.google.com/uc?id={file_id}"
-            gdown.download(url, db_path, quiet=False)
+            try:
+                gdown.download(url, db_path, quiet=False)
+            except Exception as e:
+                st.error(f"❌ Cannot download database: {e}")
+
         return db_path
 
+
+# ✅ Cache path for reuse
 @st.cache_resource
 def get_db_path():
     return download_db_path()

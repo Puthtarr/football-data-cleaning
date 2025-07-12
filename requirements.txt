@@ -3,3 +3,9 @@ pandas
 plotly
 gdown
 duckdb
+langchain
+langchain-community
+langchain-openai
+langchain-experimental
+python-dotenv
+deep-translator
